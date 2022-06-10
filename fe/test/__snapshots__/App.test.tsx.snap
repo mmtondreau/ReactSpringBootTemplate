@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshots match 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -19,11 +19,11 @@
+              type=\\"button\\"
+            >
+              Increment
+            </button>
+            <span>
+-             count is: -1
++             count is: 0
+            </span>
+            <button
+              aria-label=\\"Decrement value\\"
+              type=\\"button\\"
+            >"
+`;
+
+exports[`snapshots match 2`] = `
+"Snapshot Diff:
+Compared values have no visual difference."
+`;
+
+exports[`snapshots match 3`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -19,11 +19,11 @@
+              type=\\"button\\"
+            >
+              Increment
+            </button>
+            <span>
+-             count is: -1
++             count is: -2
+            </span>
+            <button
+              aria-label=\\"Decrement value\\"
+              type=\\"button\\"
+            >"
+`;
