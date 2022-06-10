@@ -1,0 +1,25 @@
+db:
+  password: calories876
+  user: caloriesuser
+
+spring:
+  application:
+    name: stonks
+  datasource:
+    url: jdbc:postgresql://localhost:5432/calories
+    username: ${db.user}
+    password: ${db.password}
+  jpa.properties.hibernate:
+    jdbc.lob.non_contextual_creation: true
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    # Hibernate ddl auto (create, create-drop, validate, update)
+    ddl-auto: update
+  flyway:
+    url : jdbc:postgresql://localhost:5432/calories
+    schemas : calories
+    user : ${db.user}
+    password : ${db.password}
+
+logging:
+  level:
+    root=: INFO

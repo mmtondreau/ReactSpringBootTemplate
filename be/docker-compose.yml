@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=caloriesuser
+      - POSTGRES_DB=calories
+      - POSTGRES_PASSWORD=calories876
+    ports:
+      - "5432:5432"

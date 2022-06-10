@@ -1,0 +1,9 @@
+
+type Query {
+    version(id: ID!): VersionType!
+}
+
+type VersionType {
+    id: ID!,
+    name: String!
+}
