@@ -17,6 +17,7 @@ import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
 import org.tonberry.calories.calorieserver.schema.AuthenticateResponse;
 import org.tonberry.calories.calorieserver.security.MyUserDetailsService;
+import org.tonberry.calories.calorieserver.utilities.Cookies;
 import org.tonberry.calories.calorieserver.utilities.Crypto;
 
 import javax.servlet.http.Cookie;
@@ -80,7 +81,7 @@ public class AuthController {
     @RequestMapping(value = "/v1/logout", method = RequestMethod.POST)
     public ResponseEntity<?> logout(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
 
-        Optional<Cookie> cookieOpt = CookieAuthenticationFilter.getCookie(servletRequest);
+        Optional<Cookie> cookieOpt = Cookies.getCookie(servletRequest, CookieAuthenticationFilter.COOKIE_NAME);
         cookieOpt.ifPresent((cookie -> {
             cookie.setHttpOnly(httpOnly);
             cookie.setSecure(secureCookie);
@@ -88,7 +89,7 @@ public class AuthController {
             cookie.setPath("/");
             servletResponse.addCookie(cookie);
         }));
-        CookieAuthenticationFilter.decodeCookie(cookieOpt).ifPresent(authSessionRepository::deleteById);
+        Cookies.decodeCookie(cookieOpt).ifPresent(authSessionRepository::deleteById);
 
         return ResponseEntity.ok(new AuthenticateResponse("Success"));
     }
