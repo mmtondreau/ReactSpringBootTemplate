@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "auth.cookie.httpOnly",
+      "type": "java.lang.Boolean",
+      "description": "Set auth session cookie with http only"
+    },
+    {
+      "name": "auth.cookie.secure",
+      "type": "java.lang.Boolean",
+      "description": "Set auth session cookie with secure"
+    }
+  ] }

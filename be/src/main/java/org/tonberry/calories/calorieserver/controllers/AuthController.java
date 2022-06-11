@@ -2,7 +2,10 @@ package org.tonberry.calories.calorieserver.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,6 +21,7 @@ import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
 import org.tonberry.calories.calorieserver.schema.AuthenticateResponse;
 import org.tonberry.calories.calorieserver.security.MyUserDetailsService;
+import org.tonberry.calories.calorieserver.utilities.Crypto;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -28,21 +32,24 @@ import java.util.Date;
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    public static final String COOKIE_NAME = "SESSION";
 
-    @Autowired
-    private MyUserDetailsService userDetailsService;
+    @Value("${auth.cookie.secure}")
+    public Boolean secureCookie;
 
-    @Autowired
-    AuthSessionRepository authSessionRepository;
+    @Value("${auth.cookie.httpOnly}")
+    public Boolean httpOnly;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+
+    private final MyUserDetailsService userDetailsService;
+
+    private final AuthSessionRepository authSessionRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     public Date addHoursToJavaUtilDate(Date date, int hours) {
         Calendar calendar = Calendar.getInstance();
@@ -64,14 +71,14 @@ public class AuthController {
         String sessionToken = UUID.randomUUID().toString();
         AuthSession authSession = AuthSession.builder()
                 .withUserId(userDetails.getUserId())
-                .withExpiration( addHoursToJavaUtilDate(new Date(), 24))
-                .withToken(sessionToken)
+                .withExpiration(addHoursToJavaUtilDate(new Date(), 24))
+                .withToken(Crypto.hashSha256(sessionToken))
                 .build();
         authSessionRepository.save(authSession);
 
-        Cookie authCookie = new Cookie("SESSION", sessionToken);
-        authCookie.setHttpOnly(true);
-        authCookie.setSecure(true);
+        Cookie authCookie = new Cookie(COOKIE_NAME, Crypto.encodeBase64(sessionToken));
+        authCookie.setHttpOnly(httpOnly);
+        authCookie.setSecure(secureCookie);
         authCookie.setMaxAge((int) Duration.of(1, ChronoUnit.DAYS).toSeconds());
         authCookie.setPath("/");
         servletResponse.addCookie(authCookie);

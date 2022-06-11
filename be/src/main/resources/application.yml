@@ -1,7 +1,10 @@
 db:
   password: calories876
   user: caloriesuser
-
+auth:
+  cookie:
+    httpOnly: true
+    secure: true
 spring:
   application:
     name: stonks
