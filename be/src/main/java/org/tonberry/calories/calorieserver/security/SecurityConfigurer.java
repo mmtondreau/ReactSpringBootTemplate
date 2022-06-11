@@ -26,7 +26,6 @@ import org.tonberry.calories.calorieserver.filter.CookieAuthenticationFilter;
         jsr250Enabled = true)
 public class SecurityConfigurer  {
 
-    private final UserDetailsService userDetailsService;
     private final APIKeyAuthenticationFilter apiKeyAuthenticationFilter;
     private final CookieAuthenticationFilter cookieAuthenticationFilter;
 

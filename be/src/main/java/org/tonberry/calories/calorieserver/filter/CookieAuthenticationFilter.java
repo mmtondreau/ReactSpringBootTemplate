@@ -53,8 +53,4 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
         }
         chain.doFilter(request, response);
     }
-
-    private Optional<String> decodeCookie(Optional<Cookie> cookie) {
-        return cookie.map((c -> Crypto.hashSha256(new String(Base64.decodeBase64(c.getValue())))));
-    }
 }

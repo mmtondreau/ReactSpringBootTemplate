@@ -1,10 +1,6 @@
 package org.tonberry.calories.calorieserver.controllers;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.tonberry.calories.calorieserver.persistence.auth.AuthSession;
+import org.tonberry.calories.calorieserver.persistence.redis.AuthSession;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
 import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
@@ -72,7 +68,7 @@ public class AuthController {
         AuthSession authSession = AuthSession.builder()
                 .withUserId(userDetails.getUserId())
                 .withExpiration(addHoursToJavaUtilDate(new Date(), 24))
-                .withToken(Crypto.hashSha256(sessionToken))
+                .withId(Crypto.hashSha256(sessionToken))
                 .build();
         authSessionRepository.save(authSession);
 

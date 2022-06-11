@@ -1,5 +1,6 @@
 package org.tonberry.calories.calorieserver.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,13 +14,12 @@ import org.tonberry.calories.calorieserver.repository.UserRepository;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MyUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    AuthSessionRepository authSessionRepository;
+    private final AuthSessionRepository authSessionRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,7 +33,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserBySessionToken(String sessionToken) throws UsernameNotFoundException {
-        return authSessionRepository.findByToken(sessionToken)
+        return authSessionRepository.findById(sessionToken)
                 .flatMap(session -> userRepository.findById(session.getUserId()))
                 .orElse(null);
     }
