@@ -28,7 +28,7 @@ class ApplicationStartupTest extends MockitoUnitTest {
     void applicationReadyEvent_createUser() {
         when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
         applicationStartup.applicationReadyEvent();
-        verify(userRepository).save(any(User.class));
+        verify(userRepository, times(2)).save(any(User.class));
     }
 
     @Test

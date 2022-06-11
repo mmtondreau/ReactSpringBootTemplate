@@ -1,0 +1,5 @@
+type Mutation {
+    setCount(input: Int!): Int!
+    decrementCount: Int!
+    incrementCount: Int!
+}
