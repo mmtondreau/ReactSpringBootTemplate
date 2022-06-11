@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.tonberry.calories.calorieserver.persistence.redis.AuthSession;
+import org.tonberry.calories.calorieserver.filter.CookieAuthenticationFilter;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
+import org.tonberry.calories.calorieserver.persistence.redis.AuthSession;
 import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
 import org.tonberry.calories.calorieserver.schema.AuthenticateResponse;
@@ -20,32 +20,27 @@ import org.tonberry.calories.calorieserver.security.MyUserDetailsService;
 import org.tonberry.calories.calorieserver.utilities.Crypto;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
 
-    public static final String COOKIE_NAME = "SESSION";
+    private final AuthenticationManager authenticationManager;
+    private final MyUserDetailsService userDetailsService;
+    private final AuthSessionRepository authSessionRepository;
 
     @Value("${auth.cookie.secure}")
     public Boolean secureCookie;
-
     @Value("${auth.cookie.httpOnly}")
     public Boolean httpOnly;
-
-    private final AuthenticationManager authenticationManager;
-
-    private final MyUserDetailsService userDetailsService;
-
-    private final AuthSessionRepository authSessionRepository;
-
-    private final PasswordEncoder passwordEncoder;
 
     public Date addHoursToJavaUtilDate(Date date, int hours) {
         Calendar calendar = Calendar.getInstance();
@@ -54,8 +49,8 @@ public class AuthController {
         return calendar.getTime();
     }
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticatRequest authenticatRequest, HttpServletResponse servletResponse) throws Exception {
+    @RequestMapping(value = "/v1/login", method = RequestMethod.POST)
+    public ResponseEntity<?> login(@RequestBody AuthenticatRequest authenticatRequest, HttpServletResponse servletResponse) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticatRequest.getUsername(), authenticatRequest.getPassword())
@@ -72,7 +67,7 @@ public class AuthController {
                 .build();
         authSessionRepository.save(authSession);
 
-        Cookie authCookie = new Cookie(COOKIE_NAME, Crypto.encodeBase64(sessionToken));
+        Cookie authCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME, Crypto.encodeBase64(sessionToken));
         authCookie.setHttpOnly(httpOnly);
         authCookie.setSecure(secureCookie);
         authCookie.setMaxAge((int) Duration.of(1, ChronoUnit.DAYS).toSeconds());
@@ -82,4 +77,19 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticateResponse("Success"));
     }
 
+    @RequestMapping(value = "/v1/logout", method = RequestMethod.POST)
+    public ResponseEntity<?> logout(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+
+        Optional<Cookie> cookieOpt = CookieAuthenticationFilter.getCookie(servletRequest);
+        cookieOpt.ifPresent((cookie -> {
+            cookie.setHttpOnly(httpOnly);
+            cookie.setSecure(secureCookie);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            servletResponse.addCookie(cookie);
+        }));
+        CookieAuthenticationFilter.decodeCookie(cookieOpt).ifPresent(authSessionRepository::deleteById);
+
+        return ResponseEntity.ok(new AuthenticateResponse("Success"));
+    }
 }

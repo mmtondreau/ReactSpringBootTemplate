@@ -1,7 +1,6 @@
 package org.tonberry.calories.calorieserver.filter;
 
 import lombok.NonNull;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,24 +20,28 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.tonberry.calories.calorieserver.controllers.AuthController.COOKIE_NAME;
-
 @Component
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
 
+    public static final String COOKIE_NAME = "SESSION";
+
     @Autowired
     private MyUserDetailsService userDetailsService;
 
-    private Optional<String> getCookie(@NonNull HttpServletRequest request) {
+    public static Optional<String> decodeCookie(Optional<Cookie> cookie) {
+        return cookie.map((c -> Crypto.hashSha256(Crypto.decodeBase64(c.getValue()))));
+    }
+
+    public static Optional<Cookie> getCookie(@NonNull HttpServletRequest request) {
         return Stream.of(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
                 .filter(cookie -> COOKIE_NAME.equals(cookie.getName()))
-                .findFirst()
-                .map((c -> Crypto.hashSha256(Crypto.decodeBase64(c.getValue()))));
+                .findFirst();
     }
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
-        Optional<String> sessionToken = getCookie(request);
+        Optional<String> sessionToken = decodeCookie(getCookie(request));
 
         if (sessionToken.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserBySessionToken(sessionToken.get());
