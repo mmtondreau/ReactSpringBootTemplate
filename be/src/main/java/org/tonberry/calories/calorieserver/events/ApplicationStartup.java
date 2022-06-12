@@ -2,6 +2,7 @@ package org.tonberry.calories.calorieserver.events;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,9 +13,20 @@ import org.tonberry.calories.calorieserver.persistence.auth.RoleAuthorities;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
 import org.tonberry.calories.calorieserver.repository.UserRepository;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 public class ApplicationStartup {
+
+    @Value("${admin.password}")
+    String adminPassword;
+
+    @Value("${admin.username}")
+    String adminUsername;
+
+    @Value("${admin.apiKey:#{null}}")
+    String adminAPIKey;
 
     @Autowired
     UserRepository userRepository;
@@ -24,7 +36,7 @@ public class ApplicationStartup {
 
     @EventListener(ApplicationReadyEvent.class)
     public void applicationReadyEvent() {
-        if (userRepository.findByUsername("bootstrap").isEmpty()) {
+        if (userRepository.findByUsername(adminUsername).isEmpty()) {
 
             Authority authority = Authority.builder()
                     .withName("ROLE_ADMIN")
@@ -36,11 +48,11 @@ public class ApplicationStartup {
 
             Role role = Role.builder().withName("admin").build()
                     .addRoleAuthority(roleAuthorities);
-
+            String apiKey = adminAPIKey == null ? UUID.randomUUID().toString() : adminAPIKey;
             User user = User.builder()
-                    .withUsername("bootstrap")
-                    .withApiKey("5D728295-24D0-4EDB-8FE3-A075CFFF1207")
-                    .withPassword(passwordEncoder.encode("password1"))
+                    .withUsername(adminUsername)
+                    .withApiKey(apiKey)
+                    .withPassword(passwordEncoder.encode(adminPassword))
                     .withAccountNonExpired(true)
                     .withAccountNonLocked(true)
                     .withCredentialsNonExpired(true)
