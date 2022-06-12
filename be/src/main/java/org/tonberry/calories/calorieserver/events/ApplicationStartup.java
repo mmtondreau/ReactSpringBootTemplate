@@ -62,29 +62,6 @@ public class ApplicationStartup {
 
             userRepository.save(user);
         }
-        if (userRepository.findByUsername("user").isEmpty()) {
-            Authority authority = Authority.builder()
-                    .withName("ROLE_USER")
-                    .build();
-
-            RoleAuthorities roleAuthorities = RoleAuthorities.builder()
-                    .withAuthority(authority)
-                    .build();
-
-            Role role = Role.builder().withName("user").build()
-                    .addRoleAuthority(roleAuthorities);
-            User user = User.builder()
-                    .withUsername("user")
-                    .withApiKey("B2AEE2C5-C729-44C3-9BB3-90A26BD01B0C")
-                    .withPassword(passwordEncoder.encode("password1"))
-                    .withAccountNonExpired(true)
-                    .withAccountNonLocked(true)
-                    .withCredentialsNonExpired(true)
-                    .withEnabled(true)
-                    .withRole(role)
-                    .build();
-            userRepository.save(user);
-        }
 
     }
 }
