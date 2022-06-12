@@ -2,3 +2,6 @@ auth:
   cookie:
     httpOnly: false
     secure: false
+spring:
+  graphql:
+    graphiql.enabled: true

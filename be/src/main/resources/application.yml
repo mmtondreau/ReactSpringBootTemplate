@@ -5,6 +5,8 @@ auth:
   cookie:
     httpOnly: true
     secure: true
+cors:
+  allowedOrigins: "http://localhost:3000"
 spring:
   application:
     name: stonks
