@@ -1,0 +1,9 @@
+overwrite: true
+generates:
+  src/gen/be.interface.ts:
+    schema: '../be/src/main/resources/graphql/*.graphqls'
+    config:
+      defaultMapper: any
+    plugins:
+      - typescript
+      - typescript-resolvers

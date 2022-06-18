@@ -4,15 +4,16 @@ import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import App from '../src/App';
 import store from '../src/app/store';
+import Counter from '../src/components/Counter';
 
-jest.mock('../src/apollo-client.ts', () => {
+jest.mock('../src/services/apollo-client.ts', () => {
   let count = 0;
   return {
     default: {
-      query: jest.fn(() => Promise.resolve(count)),
+      query: jest.fn(() => Promise.resolve({ data: { count } })),
       mutate: jest.fn(() => {
         count += 1;
-        Promise.resolve(count);
+        return Promise.resolve({ data: { incrementCount: count } });
       }),
     },
   };
@@ -22,7 +23,7 @@ jest.mock('../src/apollo-client.ts', () => {
 test('renders main page', async () => {
   render(
     <Provider store={store}>
-      <App />
+      <Counter />
     </Provider>,
   );
   const increamentButton = await screen.findByText('Increment');
@@ -38,6 +39,8 @@ test('snapshots match', async () => {
     </Provider>,
   );
   const firstRender = asFragment();
-  fireEvent.click(getByText('Increment'));
+  act(() => {
+    fireEvent.click(getByText('Increment'));
+  });
   expect(firstRender).toMatchDiffSnapshot(asFragment());
 });
