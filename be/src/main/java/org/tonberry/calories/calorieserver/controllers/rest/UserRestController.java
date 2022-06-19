@@ -1,4 +1,4 @@
-package org.tonberry.calories.calorieserver.controllers;
+package org.tonberry.calories.calorieserver.controllers.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +21,7 @@ import javax.annotation.security.RolesAllowed;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/")
-public class UserController {
+public class UserRestController {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -64,4 +64,6 @@ public class UserController {
         });
         roleRepository.save(role);
     }
+
+
 }

@@ -8,7 +8,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.tonberry.calories.calorieserver.security.MyUserDetailsService;
+import org.tonberry.calories.calorieserver.config.security.MyUserDetailsService;
 import org.tonberry.calories.calorieserver.utilities.Cookies;
 
 import javax.servlet.FilterChain;

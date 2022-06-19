@@ -1,4 +1,4 @@
-package org.tonberry.calories.calorieserver.controllers;
+package org.tonberry.calories.calorieserver.controllers.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import org.tonberry.calories.calorieserver.persistence.redis.AuthSession;
 import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
 import org.tonberry.calories.calorieserver.schema.AuthenticateResponse;
-import org.tonberry.calories.calorieserver.security.MyUserDetailsService;
+import org.tonberry.calories.calorieserver.config.security.MyUserDetailsService;
 import org.tonberry.calories.calorieserver.utilities.Cookies;
 import org.tonberry.calories.calorieserver.utilities.Crypto;
 
@@ -29,7 +29,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
     private final MyUserDetailsService userDetailsService;

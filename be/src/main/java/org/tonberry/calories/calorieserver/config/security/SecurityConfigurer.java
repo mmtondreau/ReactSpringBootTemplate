@@ -1,4 +1,4 @@
-package org.tonberry.calories.calorieserver.security;
+package org.tonberry.calories.calorieserver.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

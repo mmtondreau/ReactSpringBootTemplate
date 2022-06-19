@@ -1,4 +1,4 @@
-package org.tonberry.calories.calorieserver.redis;
+package org.tonberry.calories.calorieserver.config.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
