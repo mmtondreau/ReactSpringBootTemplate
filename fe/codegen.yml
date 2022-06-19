@@ -9,3 +9,16 @@ generates:
       - typescript
       - typescript-resolvers
       - typescript-react-query
+  ../be/target/generated-sources/org/tonberry/graphql/types.java:
+    schema: '../be/src/main/resources/graphql/*.graphqls'
+    config:
+      package: org.tonberry.graphql
+      strictScalars: true
+      scalars:
+        DateTime: java.time.OffsetDateTime
+        Time: java.time.OffsetTime
+        LocalTime: java.time.LocalTime
+        Date: java.time.LocalDate
+
+    plugins:
+      - java

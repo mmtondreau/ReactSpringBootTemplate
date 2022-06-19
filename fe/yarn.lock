@@ -757,6 +757,28 @@
     "@graphql-tools/utils" "^8.1.1"
     tslib "~2.3.0"
 
+"@graphql-codegen/java-common@^2.1.20":
+  version "2.1.20"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/java-common/-/java-common-2.1.20.tgz#743a14b3fbcd52df621abf286208122ff42ea71c"
+  integrity sha512-jS1qzOHWugbdzRPfwbFEVB16r0D2an+nl5BlccBbKVP0T/cEr6goeo7mvNwtfi4XlH3KaUnnGr768MjKMMvhdg==
+  dependencies:
+    "@graphql-codegen/plugin-helpers" "^2.4.0"
+    "@graphql-codegen/visitor-plugin-common" "2.9.1"
+    auto-bind "~4.0.0"
+    min-indent "1.0.1"
+    tslib "~2.4.0"
+    unixify "^1.0.0"
+
+"@graphql-codegen/java@^3.2.14":
+  version "3.2.14"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/java/-/java-3.2.14.tgz#88cd773c3d047ad093839099bea48302ef9a2eaa"
+  integrity sha512-e/ZhSIpjTkcn+3owCmWF4pEDS/fhIVCzlJEgDFsr+66cmaxahlRRjoWIICPsEw6t7xNRW7jYB4ScOlGrJHpb6Q==
+  dependencies:
+    "@graphql-codegen/java-common" "^2.1.20"
+    "@graphql-codegen/plugin-helpers" "^2.4.0"
+    "@graphql-codegen/visitor-plugin-common" "2.9.1"
+    tslib "~2.4.0"
+
 "@graphql-codegen/plugin-helpers@^2.3.2", "@graphql-codegen/plugin-helpers@^2.4.0", "@graphql-codegen/plugin-helpers@^2.4.1":
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-2.4.2.tgz#e4f6b74dddcf8a9974fef5ce48562ae0980f9fed"
@@ -5381,7 +5403,7 @@ mimic-response@^1.0.0, mimic-response@^1.0.1:
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.1.tgz#4923538878eef42063cb8a3e3b0798781487ab1b"
   integrity sha512-j5EctnkH7amfV/q5Hgmoal1g2QHFJRraOtmx0JpIqkxhBhI/lJSl1nMpQ45hVarwNETOoWEimndZ4QK0RHxuxQ==
 
-min-indent@^1.0.0:
+min-indent@1.0.1, min-indent@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/min-indent/-/min-indent-1.0.1.tgz"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
