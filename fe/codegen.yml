@@ -9,7 +9,7 @@ generates:
       - typescript
       - typescript-resolvers
       - typescript-react-query
-  ../be/target/generated-sources/org/tonberry/graphql/types.java:
+  ../be/target/generated-sources/org/tonberry/graphql/Types.java:
     schema: '../be/src/main/resources/graphql/*.graphqls'
     config:
       package: org.tonberry.graphql

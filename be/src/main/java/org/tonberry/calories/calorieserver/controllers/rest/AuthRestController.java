@@ -14,6 +14,7 @@ import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
 import org.tonberry.calories.calorieserver.schema.AuthenticatRequest;
 import org.tonberry.calories.calorieserver.schema.AuthenticateResponse;
 import org.tonberry.calories.calorieserver.config.security.MyUserDetailsService;
+import org.tonberry.calories.calorieserver.services.AuthService;
 import org.tonberry.calories.calorieserver.utilities.Cookies;
 import org.tonberry.calories.calorieserver.utilities.Crypto;
 
@@ -31,63 +32,46 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthRestController {
 
-    private final AuthenticationManager authenticationManager;
-    private final MyUserDetailsService userDetailsService;
-    private final AuthSessionRepository authSessionRepository;
-
     @Value("${auth.cookie.secure}")
     public Boolean secureCookie;
     @Value("${auth.cookie.httpOnly}")
     public Boolean httpOnly;
 
-    public Date addHoursToJavaUtilDate(Date date, int hours) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        return calendar.getTime();
-    }
+    private final AuthService authService;
 
     @RequestMapping(value = "/v1/login", method = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody AuthenticatRequest authenticatRequest, HttpServletResponse servletResponse) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticatRequest.getUsername(), authenticatRequest.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password");
-        }
-        final User userDetails = (User) userDetailsService.loadUserByUsername(authenticatRequest.getUsername());
-        String sessionToken = UUID.randomUUID().toString();
-        AuthSession authSession = AuthSession.builder()
-                .withUserId(userDetails.getUserId())
-                .withExpiration(addHoursToJavaUtilDate(new Date(), 24))
-                .withId(Crypto.hashSha256(sessionToken))
-                .build();
-        authSessionRepository.save(authSession);
+        String sessionToken = authService.authenticate(authenticatRequest.getUsername(), authenticatRequest.getPassword());
+        Cookie authCookie = createSessionCookie(sessionToken);
+        servletResponse.addCookie(authCookie);
+        return ResponseEntity.ok(new AuthenticateResponse("Success"));
+    }
 
+    private Cookie createSessionCookie(String sessionToken) {
         Cookie authCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME, Crypto.encodeBase64(sessionToken));
         authCookie.setHttpOnly(httpOnly);
         authCookie.setSecure(secureCookie);
         authCookie.setMaxAge((int) Duration.of(1, ChronoUnit.DAYS).toSeconds());
         authCookie.setPath("/");
-        servletResponse.addCookie(authCookie);
-
-        return ResponseEntity.ok(new AuthenticateResponse("Success"));
+        return authCookie;
     }
 
     @RequestMapping(value = "/v1/logout", method = RequestMethod.POST)
     public ResponseEntity<?> logout(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
-
         Optional<Cookie> cookieOpt = Cookies.getCookie(servletRequest, CookieAuthenticationFilter.COOKIE_NAME);
         cookieOpt.ifPresent((cookie -> {
-            cookie.setHttpOnly(httpOnly);
-            cookie.setSecure(secureCookie);
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
+            resetCookie(cookie);
             servletResponse.addCookie(cookie);
         }));
-        Cookies.decodeCookie(cookieOpt).ifPresent(authSessionRepository::deleteById);
-
+        Cookies.decodeCookie(cookieOpt).ifPresent(authService::deauthorize);
         return ResponseEntity.ok(new AuthenticateResponse("Success"));
     }
+
+    public void resetCookie(Cookie cookie) {
+        cookie.setHttpOnly(httpOnly);
+        cookie.setSecure(secureCookie);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+    }
+
 }
