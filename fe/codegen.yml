@@ -5,10 +5,15 @@ generates:
     documents: ['./src/**/*.ts', './src/**/*.tsx']
     config:
       defaultMapper: any
+      reactApolloVersion: 3
+      withHOC: false
+      withComponent: false
+      withHooks: true
     plugins:
       - typescript
       - typescript-resolvers
-      - typescript-react-query
+      - typescript-operations
+      - typescript-react-apollo
   ../be/target/generated-sources/org/tonberry/graphql/Types.java:
     schema: '../be/src/main/resources/graphql/*.graphqls'
     config:

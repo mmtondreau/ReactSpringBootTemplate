@@ -30,6 +30,7 @@
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/typescript": "^2.5.1",
     "@graphql-codegen/typescript-operations": "^2.4.2",
+    "@graphql-codegen/typescript-react-apollo": "^3.2.16",
     "@graphql-codegen/typescript-react-query": "^3.5.14",
     "@graphql-codegen/typescript-resolvers": "^2.6.6",
     "@testing-library/jest-dom": "^5.16.4",

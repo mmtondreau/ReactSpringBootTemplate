@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import client from '../../apollo-client';
+import client from '../../servies/apollo-client';
 import { AppDispatch } from '../../app/store';
 // Define a type for the slice state
 interface CounterState {

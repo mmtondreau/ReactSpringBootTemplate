@@ -2,8 +2,7 @@ type Mutation {
     setCount(input: Int!): Int!
     decrementCount: Int!
     incrementCount: Int!
-    login(input: LoginInput!): Boolean
-    logout: Boolean
+    login(input: LoginInput!): Boolean!
 }
 
 input LoginInput {

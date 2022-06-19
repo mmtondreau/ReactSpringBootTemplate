@@ -28,6 +28,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint'],
+  ignorePatterns: ['src/gen/**/*'],
   rules: {
     'no-param-reassign': ['error', { props: true, ignorePropertyModificationsFor: ['state'] }],
     'react/react-in-jsx-scope': 'off',
