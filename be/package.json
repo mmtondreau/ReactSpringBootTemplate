@@ -1,0 +1,15 @@
+{
+  "name": "graphql-codegen",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "generate": "graphql-codegen"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/java": "^3.2.14",
+    "graphql": "^16.5.0"
+  }
+}

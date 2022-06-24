@@ -1,0 +1,15 @@
+overwrite: true
+generates:
+  target/generated-sources/org/tonberry/graphql/Types.java:
+    schema: 'src/main/resources/graphql/*.graphqls'
+    config:
+      package: org.tonberry.graphql
+      strictScalars: true
+      scalars:
+        DateTime: java.time.OffsetDateTime
+        Time: java.time.OffsetTime
+        LocalTime: java.time.LocalTime
+        Date: java.time.LocalDate
+      useEmptyCtor: true
+    plugins:
+      - java
