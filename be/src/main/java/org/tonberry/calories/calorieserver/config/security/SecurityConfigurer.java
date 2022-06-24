@@ -37,11 +37,9 @@ public class SecurityConfigurer  {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .authorizeRequests()
-                .anyRequest()
-                .permitAll()
+        http.csrf().disable()//.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                //.and()
+                .authorizeRequests().anyRequest().permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class);

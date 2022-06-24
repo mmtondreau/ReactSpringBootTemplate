@@ -1,6 +1,7 @@
 package org.tonberry.calories.calorieserver.filter;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +10,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.tonberry.calories.calorieserver.config.security.MyUserDetailsService;
-import org.tonberry.calories.calorieserver.utilities.Cookies;
+import org.tonberry.calories.calorieserver.utilities.CookieService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
 
@@ -29,7 +31,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
-        Optional<String> sessionToken = Cookies.decodeCookie(Cookies.getCookie(request, COOKIE_NAME));
+        log.trace("doFilterInternal - entry");
+        Optional<String> sessionToken = CookieService.decodeCookie(CookieService.getCookie(request, COOKIE_NAME));
 
         if (sessionToken.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserBySessionToken(sessionToken.get());
@@ -43,5 +46,6 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+        log.trace("doFilterInternal - exit");
     }
 }

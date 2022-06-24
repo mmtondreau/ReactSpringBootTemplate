@@ -21,7 +21,7 @@ spring:
     ddl-auto: update
   flyway:
     url : jdbc:postgresql://localhost:5432/calories
-    schemas : calories
+    schemas : migration
     user : ${db.user}
     password : ${db.password}
   redis:

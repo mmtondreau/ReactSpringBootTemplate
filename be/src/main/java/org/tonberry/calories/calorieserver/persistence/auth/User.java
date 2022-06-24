@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "user", schema = "auth")
+@Table(name = "users", schema = "auth")
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor

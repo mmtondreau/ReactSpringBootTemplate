@@ -24,6 +24,6 @@ generates:
         Time: java.time.OffsetTime
         LocalTime: java.time.LocalTime
         Date: java.time.LocalDate
-
+      useEmptyCtor: true
     plugins:
       - java

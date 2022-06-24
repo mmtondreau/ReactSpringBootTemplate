@@ -12,6 +12,7 @@ public class CounterController {
     private static int count = 0;
 
     @QueryMapping
+    @RolesAllowed({"ROLE_ADMIN"})
     public int count() {
         return count;
     }

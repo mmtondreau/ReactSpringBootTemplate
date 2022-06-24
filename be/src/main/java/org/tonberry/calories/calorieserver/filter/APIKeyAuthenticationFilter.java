@@ -1,6 +1,7 @@
 package org.tonberry.calories.calorieserver.filter;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class APIKeyAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private MyUserDetailsService userDetailsService;
@@ -24,16 +26,19 @@ public class APIKeyAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private String getAPIKey(@NonNull HttpServletRequest request) {
+        log.trace("getAPIKey entry");
         String apiKey = null;
         final String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
          apiKey = authorizationHeader.substring(BEARER_PREFIX.length());
         }
+        log.trace("getAPIKey exit");
         return apiKey;
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
+        log.trace("doFilterInternal entry");
         String apiKey = getAPIKey(request);
 
         if (apiKey != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -47,5 +52,6 @@ public class APIKeyAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+        log.trace("doFilterInternal exit");
     }
 }

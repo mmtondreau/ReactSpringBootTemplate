@@ -6,10 +6,12 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "role", schema = "auth")
+@Table(name = "roles", schema = "auth")
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +39,12 @@ public class Role {
         roleAuthorities.setRole(this);
         this.getRoleAuthorities().add(roleAuthorities);
         return this;
+    }
+
+    @Transient
+    public List<String> getAuthorities() {
+        return getRoleAuthorities().stream()
+                .map(ra -> ra.getAuthority().getName())
+                .collect(toList());
     }
 }

@@ -1,3 +1,28 @@
 type Query {
     count: Int!
+    curentUser: User
+    ping: String
+    adminPing: String
 }
+
+type User {
+    userId: ID!
+    username: String!
+    accountNonLocked: Boolean!
+    accountNonExpired: Boolean!
+    credentialsNonExpired: Boolean!
+    enabled: Boolean!
+    role: Role!
+    # person: Person
+}
+
+type Role {
+    name: String!,
+    authorities: [String]
+}
+#
+#type Person {
+#    personId: ID!
+#    firstName: String!
+#    lastName: String!
+#}

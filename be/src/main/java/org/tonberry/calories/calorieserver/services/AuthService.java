@@ -14,6 +14,7 @@ import org.tonberry.calories.calorieserver.utilities.Crypto;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,23 +32,23 @@ public class AuthService {
         return calendar.getTime();
     }
 
-    public String authenticate(@NonNull String username, @NonNull String password) throws Exception {
+    public Optional<String> authenticate(@NonNull String username, @NonNull String password) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password");
+            return Optional.empty();
         }
-        final User userDetails = (User) userDetailsService.loadUserByUsername(username);
         String sessionToken = UUID.randomUUID().toString();
+        final User userDetails = (User) userDetailsService.loadUserByUsername(username);
         AuthSession authSession = AuthSession.builder()
                 .withUserId(userDetails.getUserId())
                 .withExpiration(addHoursToJavaUtilDate(new Date(), 24))
                 .withId(Crypto.hashSha256(sessionToken))
                 .build();
         authSessionRepository.save(authSession);
-        return sessionToken;
+        return Optional.ofNullable(sessionToken);
     }
 
     public void deauthorize(@NonNull String sessionToken) {
