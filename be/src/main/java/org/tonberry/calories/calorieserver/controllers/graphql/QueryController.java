@@ -3,9 +3,12 @@ package org.tonberry.calories.calorieserver.controllers.graphql;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.WebSession;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
 import org.tonberry.calories.calorieserver.repository.UserRepository;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
@@ -31,13 +34,13 @@ public class QueryController extends GraphQLControllerBase {
     }
 
     @QueryMapping
-    public String ping() {
-        return "pong";
+    public Mono<String> ping() {
+        return Mono.just("pong");
     }
 
     @QueryMapping
-    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public String adminPing() {
-        return "pong";
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<String> adminPing() {
+        return Mono.just("pong");
     }
 }

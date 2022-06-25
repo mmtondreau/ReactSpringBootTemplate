@@ -1,55 +1,45 @@
 package org.tonberry.calories.calorieserver.config.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.tonberry.calories.calorieserver.filter.APIKeyAuthenticationFilter;
-import org.tonberry.calories.calorieserver.filter.CookieAuthenticationFilter;
-import org.tonberry.calories.calorieserver.repository.AuthSessionRepository;
-import org.tonberry.calories.calorieserver.repository.UserRepository;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
-import javax.sql.DataSource;
-
-@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
 public class SecurityConfigurer  {
 
-    private final APIKeyAuthenticationFilter apiKeyAuthenticationFilter;
-    private final CookieAuthenticationFilter cookieAuthenticationFilter;
+    private final MyUserDetailsService myUserDetailsService;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public ReactiveAuthenticationManager authenticationManager() {
+        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager =
+                new UserDetailsRepositoryReactiveAuthenticationManager(myUserDetailsService);
+        authenticationManager.setPasswordEncoder(passwordEncoder());
+        return authenticationManager;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().httpBasic().and()//.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                //.and()
-                .authorizeRequests().anyRequest().permitAll()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-
-        // http.addFilterBefore(cookieAuthenticationFilter, BasicAuthenticationFilter.class);
-        return http.build();
+    public SecurityWebFilterChain authorization(final ServerHttpSecurity http) {
+        return http.csrf().disable()
+                .authorizeExchange().anyExchange().permitAll()
+                .and().httpBasic(Customizer.withDefaults())
+                .securityContextRepository(new WebSessionServerSecurityContextRepository())
+                .logout().logoutUrl("/logout")
+                .logoutHandler(new WebSessionServerLogoutHandler())
+                .logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK))
+                .and().build();
     }
 
     @Bean

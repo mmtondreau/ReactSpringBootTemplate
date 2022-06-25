@@ -1,26 +1,21 @@
 package org.tonberry.calories.calorieserver.config.security;
 
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
-public class CorsConfiguration
+@EnableWebFlux
+public class CorsConfiguration implements WebFluxConfigurer
 {
     @Value("${cors.allowedOrigins}")
     String[] allowedOrigins;
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer()
-    {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(allowedOrigins);
-            }
-        };
+
+    @Override
+    public void addCorsMappings(CorsRegistry corsRegistry) {
+        corsRegistry.addMapping("/**").allowedOrigins(allowedOrigins);
     }
 }
