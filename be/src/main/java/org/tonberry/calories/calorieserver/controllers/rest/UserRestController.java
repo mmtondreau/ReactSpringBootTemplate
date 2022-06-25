@@ -84,32 +84,5 @@ public class UserRestController {
         roleRepository.save(role);
     }
 
-    private Cookie createSessionCookie(String sessionToken) {
-        Cookie authCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME, Crypto.encodeBase64(sessionToken));
-        authCookie.setHttpOnly(httpOnly);
-        authCookie.setSecure(secureCookie);
-        authCookie.setMaxAge((int) Duration.of(1, ChronoUnit.DAYS).toSeconds());
-        authCookie.setPath("/");
-        return authCookie;
-    }
-
-    @RequestMapping(value = "/v1/logout", method = RequestMethod.POST)
-    public ResponseEntity<?> logout(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
-        Optional<Cookie> cookieOpt = CookieService.getCookie(servletRequest, CookieAuthenticationFilter.COOKIE_NAME);
-        cookieOpt.ifPresent((cookie -> {
-            resetCookie(cookie);
-            servletResponse.addCookie(cookie);
-        }));
-        CookieService.decodeCookie(cookieOpt).ifPresent(authService::deauthorize);
-        return ResponseEntity.ok(new AuthenticateResponse("Success"));
-    }
-
-    public void resetCookie(Cookie cookie) {
-        cookie.setHttpOnly(httpOnly);
-        cookie.setSecure(secureCookie);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-    }
-
 
 }

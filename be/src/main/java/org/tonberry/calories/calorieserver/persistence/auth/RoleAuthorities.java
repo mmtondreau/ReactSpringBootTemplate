@@ -4,6 +4,7 @@ package org.tonberry.calories.calorieserver.persistence.auth;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "role_authorities", schema = "auth")
-public class RoleAuthorities {
+public class RoleAuthorities implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_authority_id")
