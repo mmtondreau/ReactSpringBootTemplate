@@ -11,11 +11,14 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
 import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.CsrfServerLogoutHandler;
 import org.springframework.security.web.server.csrf.CsrfToken;
+import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
@@ -37,12 +40,12 @@ public class SecurityConfigurer  {
 
     @Bean
     public SecurityWebFilterChain authorization(final ServerHttpSecurity http) {
-        return http.csrf().and()
+        final var csrfTokenRepository = new WebSessionServerCsrfTokenRepository();
+        return http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
                 .authorizeExchange().anyExchange().permitAll()
                 .and().httpBasic(Customizer.withDefaults())
                 .securityContextRepository(new WebSessionServerSecurityContextRepository())
                 .logout().logoutUrl("/logout")
-                .logoutHandler(new WebSessionServerLogoutHandler())
                 .logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK))
                 .and().build();
     }
