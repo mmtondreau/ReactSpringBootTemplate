@@ -2,11 +2,5 @@ type Mutation {
     setCount(input: Int!): Int!
     decrementCount: Int!
     incrementCount: Int!
-    login(input: LoginInput!): Boolean!
-    logout: Boolean!
-}
-
-input LoginInput {
-    username: String!
-    password: String!
+    login: String!
 }
