@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,12 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.CsrfToken;
+import org.springframework.web.server.WebFilter;
+import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,7 +37,7 @@ public class SecurityConfigurer  {
 
     @Bean
     public SecurityWebFilterChain authorization(final ServerHttpSecurity http) {
-        return http.csrf().disable()
+        return http.csrf().and()
                 .authorizeExchange().anyExchange().permitAll()
                 .and().httpBasic(Customizer.withDefaults())
                 .securityContextRepository(new WebSessionServerSecurityContextRepository())
@@ -46,4 +51,6 @@ public class SecurityConfigurer  {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }
