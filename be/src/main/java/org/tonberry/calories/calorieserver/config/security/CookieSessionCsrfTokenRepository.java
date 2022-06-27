@@ -20,7 +20,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
     private String headerName = DEFAULT_CSRF_HEADER_NAME;
 
     private String cookiePath;
-
+    
     private String cookieDomain;
 
     private String cookieName = DEFAULT_CSRF_COOKIE_NAME;
@@ -44,19 +44,11 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
         return super.saveToken(exchange, token).doOnSuccess((re) -> {
             String tokenValue = (token != null) ? token.getToken() : "";
             // @formatter:off
-            ResponseCookie cookie = ResponseCookie
-                .from(this.cookieName, tokenValue)
-                .domain(this.cookieDomain)
-                .httpOnly(this.cookieHttpOnly)
-                .maxAge(!tokenValue.isEmpty() ? -1 : 0)
-                .path((this.cookiePath != null) ? this.cookiePath : getRequestContext(exchange.getRequest()))
-                .secure((this.secure != null) ? this.secure : (exchange.getRequest().getSslInfo() != null))
-                .build();
+            ResponseCookie cookie = ResponseCookie.from(this.cookieName, tokenValue).domain(this.cookieDomain).httpOnly(this.cookieHttpOnly).maxAge(!tokenValue.isEmpty() ? -1 : 0).path((this.cookiePath != null) ? this.cookiePath : getRequestContext(exchange.getRequest())).secure((this.secure != null) ? this.secure : (exchange.getRequest().getSslInfo() != null)).build();
             // @formatter:on
             exchange.getResponse().addCookie(cookie);
         });
     }
-
 
     public void setCookieName(String cookieName) {
         Assert.hasLength(cookieName, "cookieName can't be null");
@@ -65,6 +57,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
 
     /**
      * Sets the parameter name
+     *
      * @param parameterName The parameter name
      */
     public void setParameterName(String parameterName) {
@@ -74,6 +67,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
 
     /**
      * Sets the header name
+     *
      * @param headerName The header name
      */
     public void setHeaderName(String headerName) {
@@ -83,6 +77,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
 
     /**
      * Sets the cookie path
+     *
      * @param cookiePath The cookie path
      */
     public void setCookiePath(String cookiePath) {
@@ -91,6 +86,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
 
     /**
      * Sets the cookie domain
+     *
      * @param cookieDomain The cookie domain
      */
     public void setCookieDomain(String cookieDomain) {
@@ -100,6 +96,7 @@ public class CookieSessionCsrfTokenRepository extends WebSessionServerCsrfTokenR
     /**
      * Sets the cookie secure flag. If not set, the value depends on
      * {@link ServerHttpRequest#getSslInfo()}.
+     *
      * @param secure The value for the secure flag
      * @since 5.5
      */

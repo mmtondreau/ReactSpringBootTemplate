@@ -21,29 +21,20 @@ import java.util.Objects;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfigurer  {
+public class SecurityConfigurer {
 
     private final MyUserDetailsService myUserDetailsService;
 
     @Bean
     public ReactiveAuthenticationManager authenticationManager() {
-        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager =
-                new UserDetailsRepositoryReactiveAuthenticationManager(myUserDetailsService);
+        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(myUserDetailsService);
         authenticationManager.setPasswordEncoder(passwordEncoder());
         return authenticationManager;
     }
 
     @Bean
     public SecurityWebFilterChain authorization(final ServerHttpSecurity http) {
-        return http.csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieSessionCsrfTokenRepository.withHttpOnlyFalse()))
-                .authorizeExchange(ae -> ae.anyExchange().permitAll())
-                .httpBasic(Customizer.withDefaults())
-                .securityContextRepository(new WebSessionServerSecurityContextRepository())
-                .logout(logoutSpec -> logoutSpec
-                        .logoutUrl("/logout")
-                        .logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK))
-                ).build();
+        return http.csrf(csrf -> csrf.csrfTokenRepository(CookieSessionCsrfTokenRepository.withHttpOnlyFalse())).authorizeExchange(ae -> ae.anyExchange().permitAll()).httpBasic(Customizer.withDefaults()).securityContextRepository(new WebSessionServerSecurityContextRepository()).logout(logoutSpec -> logoutSpec.logoutUrl("/logout").logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK))).build();
     }
 
     @Bean
@@ -53,9 +44,8 @@ public class SecurityConfigurer  {
 
     @Bean
     WebFilter addCsrfToken() {
-        return (exchange, next) ->
-                Objects.requireNonNull(exchange.<Mono<CsrfToken>>getAttribute(CsrfToken.class.getName()))
-                .doOnSuccess(token -> {}) // do nothing, just subscribe :/
+        return (exchange, next) -> Objects.requireNonNull(exchange.<Mono<CsrfToken>>getAttribute(CsrfToken.class.getName())).doOnSuccess(token -> {
+                }) // do nothing, just subscribe :/
                 .then(next.filter(exchange));
     }
 
