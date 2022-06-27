@@ -10,8 +10,8 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableWebFlux
 public class CalorieServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CalorieServerApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(CalorieServerApplication.class, args);
+    }
 }
+
