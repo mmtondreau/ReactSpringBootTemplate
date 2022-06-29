@@ -26,9 +26,9 @@ public class Role implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    private List<RoleAuthorities> roleAuthorities;
+    private List<RoleAuthority> roleAuthorities;
 
-    public List<RoleAuthorities> getRoleAuthorities() {
+    public List<RoleAuthority> getRoleAuthorities() {
         if (roleAuthorities == null) {
             roleAuthorities = new ArrayList<>();
         }
@@ -36,7 +36,7 @@ public class Role implements Serializable {
     }
 
     @Transient
-    public Role addRoleAuthority(RoleAuthorities roleAuthorities) {
+    public Role addRoleAuthority(RoleAuthority roleAuthorities) {
         roleAuthorities.setRole(this);
         this.getRoleAuthorities().add(roleAuthorities);
         return this;

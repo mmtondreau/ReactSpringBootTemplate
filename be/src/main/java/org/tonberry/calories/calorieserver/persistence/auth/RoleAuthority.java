@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Table(name = "role_authorities", schema = "auth")
-public class RoleAuthorities implements Serializable {
+public class RoleAuthority implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_authority_id")

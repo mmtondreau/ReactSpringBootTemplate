@@ -7,4 +7,4 @@ spring:
     graphiql.enabled: true
 logging:
   level:
-    root: TRACE
+    root: DEBUG

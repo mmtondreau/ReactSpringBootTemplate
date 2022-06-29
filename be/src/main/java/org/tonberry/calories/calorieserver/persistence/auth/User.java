@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,9 +31,6 @@ public class User implements UserDetails, Serializable {
     @Column(name = "password_enc")
     private String password;
 
-    @Column(name = "api_key")
-    private String apiKey;
-
     @Column(name = "account_non_expired")
     private boolean accountNonExpired;
 
@@ -45,16 +43,34 @@ public class User implements UserDetails, Serializable {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id")
-    private Role role;
-
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<UserRole> userRoles;
     @Transient
     private List<SimpleGrantedAuthority> authorities;
 
+    public List<UserRole> getUserRoles() {
+        if (userRoles == null) {
+            userRoles = new ArrayList<>();
+        }
+        return userRoles;
+    }
+
+    @Transient
+    public List<Role> getRoles() {
+        return getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
+    }
+
+    @Transient
+    public User addUserRole(UserRole userRole) {
+        userRole.setUser(this);
+        this.getUserRoles().add(userRole);
+        return this;
+    }
+
     @PostLoad
     public void postLoad() {
-        authorities = role.getRoleAuthorities().stream()
+        authorities = getRoles().stream().map(Role::getRoleAuthorities).flatMap(Collection::stream)
                 .map(rc -> new SimpleGrantedAuthority(rc.getAuthority().getName()))
                 .collect(Collectors.toList());
     }
@@ -63,4 +79,5 @@ public class User implements UserDetails, Serializable {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
+
 }
