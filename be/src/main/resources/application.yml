@@ -2,8 +2,8 @@ server:
   error:
     include-stacktrace: never
 db:
-  password: calories876
-  user: caloriesuser
+  password: auth876
+  user: auth
 auth:
   cookie:
     httpOnly: true
@@ -13,8 +13,13 @@ cors:
 spring:
   application:
     name: stonks
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/auth
+    username: ${db.user}
+    password: ${db.password}
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/calories
+    url: jdbc:postgresql://localhost:5432/auth
     username: ${db.user}
     password: ${db.password}
   jpa.properties.hibernate:
@@ -23,7 +28,7 @@ spring:
     # Hibernate ddl auto (create, create-drop, validate, update)
     ddl-auto: update
   flyway:
-    url: jdbc:postgresql://localhost:5432/calories
+    url: jdbc:postgresql://localhost:5432/auth
     schemas: migration
     user: ${db.user}
     password: ${db.password}

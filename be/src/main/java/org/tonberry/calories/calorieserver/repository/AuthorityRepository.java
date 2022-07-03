@@ -1,10 +1,9 @@
 package org.tonberry.calories.calorieserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.tonberry.calories.calorieserver.persistence.auth.Authority;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-    Optional<Authority> findByName(String name);
+public interface AuthorityRepository extends R2dbcRepository<Authority, Long> {
+    Mono<Authority> findByName(String name);
 }

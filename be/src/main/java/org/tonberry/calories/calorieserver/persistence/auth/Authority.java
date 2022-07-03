@@ -1,24 +1,19 @@
 package org.tonberry.calories.calorieserver.persistence.auth;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
 @Builder(setterPrefix = "with")
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "authorities", schema = "auth")
+@Table("auth.authorities")
 public class Authority implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "authority_id")
     private long authorityId;
 
-    @Column(name = "name")
     private String name;
 }

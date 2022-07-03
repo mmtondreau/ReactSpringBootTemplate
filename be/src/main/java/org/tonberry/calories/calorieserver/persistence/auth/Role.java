@@ -1,40 +1,30 @@
 package org.tonberry.calories.calorieserver.persistence.auth;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
-@Getter
-@Setter
-@Entity
-@Table(name = "roles", schema = "auth")
+@Data
+@Table("auth.roles")
 @Builder(setterPrefix = "with")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Role implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
     private long roleId;
 
-    @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    private List<RoleAuthority> roleAuthorities;
+    //private Set<RoleAuthority> roleAuthorities = new HashSet<>();
 
-    public List<RoleAuthority> getRoleAuthorities() {
+    /*public Set<RoleAuthority> getRoleAuthorities() {
         if (roleAuthorities == null) {
-            roleAuthorities = new ArrayList<>();
+            roleAuthorities = new HashSet<>();
         }
         return roleAuthorities;
-    }
-
+    }*/
+/*
     @Transient
     public Role addRoleAuthority(RoleAuthority roleAuthorities) {
         roleAuthorities.setRole(this);
@@ -48,4 +38,6 @@ public class Role implements Serializable {
                 .map(ra -> ra.getAuthority().getName())
                 .collect(toList());
     }
+    */
+
 }

@@ -5,7 +5,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.WebSession;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
 import org.tonberry.calories.calorieserver.repository.UserRepository;
 import reactor.core.publisher.Mono;
@@ -17,20 +16,21 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class QueryController extends GraphQLControllerBase {
     private final UserRepository userRepository;
+
     @QueryMapping
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public User user(@Argument("username") String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public Mono<User> user(@Argument("username") String username) {
+        return userRepository.findByUsername(username);
     }
 
     @QueryMapping
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public User currentUser(Principal principal) {
+    public Mono<User> currentUser(Principal principal) {
         if (principal == null) {
             return null;
         }
         User userSessioless = getUser(principal);
-        return userRepository.findById(userSessioless.getUserId()).orElse(null);
+        return userRepository.findById(userSessioless.getUserId());
     }
 
     @QueryMapping

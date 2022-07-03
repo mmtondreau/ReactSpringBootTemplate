@@ -6,8 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.tonberry.calories.calorieserver.persistence.auth.*;
 import org.tonberry.calories.calorieserver.repository.*;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -15,29 +14,29 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final RoleRepository roleRepository;
-    private final RoleAuthoritiesRepository roleAuthoritiesRepository;
     private final UserRoleRepository userRoleRepository;
+    private final RoleAuthoritiesRepository roleAuthoritiesRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<User> findByUsername(@NonNull String username) {
+
+    public Mono<User> findByUsername(@NonNull String username) {
         return userRepository.findByUsername(username);
     }
 
-    public Authority createAuthority(@NonNull String name) {
+    public Mono<Authority> createAuthority(@NonNull String name) {
         Authority authority = Authority.builder()
                 .withName(name)
                 .build();
-        authorityRepository.save(authority);
-        return authority;
+        return authorityRepository.save(authority);
     }
 
-    public Role createRole(@NonNull String name) {
+    public Mono<Role> createRole(@NonNull String name) {
         Role role = Role.builder().withName("admin").build();
-        roleRepository.save(role);
-        return role;
+        return roleRepository.save(role);
+
     }
 
-    public User createUser(@NonNull String username, @NonNull CharSequence password) {
+    public Mono<User> createUser(@NonNull String username, @NonNull CharSequence password) {
         User user = User.builder()
                 .withUsername(username)
                 .withPassword(passwordEncoder.encode(password))
@@ -46,24 +45,23 @@ public class UserService {
                 .withCredentialsNonExpired(true)
                 .withEnabled(true)
                 .build();
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
-    public void addAuthorityToRole(@NonNull Authority authority, @NonNull Role role) {
+    public Mono<RoleAuthority> addAuthorityToRole(@NonNull Authority authority, @NonNull Role role) {
         RoleAuthority roleAuthority = RoleAuthority.builder()
-                .withAuthority(authority)
+                .withAuthorityId(authority.getAuthorityId())
+                .withRoleId(role.getRoleId())
                 .build();
-        role.addRoleAuthority(roleAuthority);
-        roleRepository.save(role);
+        return roleAuthoritiesRepository.save(roleAuthority);
     }
 
-    public void addRoleToUser(@NonNull Role role, @NonNull User user) {
+    public Mono<UserRole> addRoleToUser(@NonNull Role role, @NonNull User user) {
         UserRole userRole = UserRole.builder()
-                .withRole(role)
+                .withRoleId(role.getRoleId())
+                .withUserId(user.getUserId())
                 .build();
-        user.addUserRole(userRole);
-        userRepository.save(user);
+        return userRoleRepository.save(userRole);
     }
 
 

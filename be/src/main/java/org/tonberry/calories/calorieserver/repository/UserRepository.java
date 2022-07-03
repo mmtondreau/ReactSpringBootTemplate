@@ -1,10 +1,9 @@
 package org.tonberry.calories.calorieserver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.tonberry.calories.calorieserver.persistence.auth.User;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+public interface UserRepository extends R2dbcRepository<User, Long> {
+    Mono<User> findByUsername(String username);
 }
