@@ -247,5 +247,10 @@
             <artifactId>r2dbc-postgresql</artifactId>
             <version>0.8.12.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <version>4.1.78.Final</version>
+        </dependency>
     </dependencies>
 </project>

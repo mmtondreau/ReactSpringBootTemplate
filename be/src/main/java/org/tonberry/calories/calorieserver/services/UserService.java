@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.tonberry.calories.calorieserver.persistence.auth.*;
 import org.tonberry.calories.calorieserver.repository.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -17,7 +18,6 @@ public class UserService {
     private final UserRoleRepository userRoleRepository;
     private final RoleAuthoritiesRepository roleAuthoritiesRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     public Mono<User> findByUsername(@NonNull String username) {
         return userRepository.findByUsername(username);
@@ -31,7 +31,7 @@ public class UserService {
     }
 
     public Mono<Role> createRole(@NonNull String name) {
-        Role role = Role.builder().withName("admin").build();
+        Role role = Role.builder().withName(name).build();
         return roleRepository.save(role);
 
     }
@@ -64,5 +64,8 @@ public class UserService {
         return userRoleRepository.save(userRole);
     }
 
+    public Flux<Authority> getAuthoritiesForUser(@NonNull User user) {
+        return authorityRepository.findAuthoritiesByUserId(user.getUserId());
+    }
 
 }

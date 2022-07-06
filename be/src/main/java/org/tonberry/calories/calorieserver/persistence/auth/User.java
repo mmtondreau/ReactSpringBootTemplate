@@ -52,8 +52,9 @@ public class User implements UserDetails, Serializable {
     }
 
     @Transient
-    public void setAuthorities(List<SimpleGrantedAuthority> authorities) {
+    public User setAuthorities(List<SimpleGrantedAuthority> authorities) {
         this.authorities = authorities;
+        return this;
     }
 
     /**

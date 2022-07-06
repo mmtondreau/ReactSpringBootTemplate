@@ -3,6 +3,7 @@ package org.tonberry.calories.calorieserver.persistence.auth;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Builder(setterPrefix = "with")
 public class Role implements Serializable {
     @Id
+    @Column("role_id")
     private long roleId;
 
     private String name;

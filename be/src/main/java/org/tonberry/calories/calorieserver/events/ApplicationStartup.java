@@ -29,7 +29,7 @@ public class ApplicationStartup {
     public void applicationReadyEvent() {
         User user = userService.findByUsername(adminUsername).block();
         if (user == null) {
-            createAdminUser().block();
+            createAdminUser().log().block();
         }
     }
 

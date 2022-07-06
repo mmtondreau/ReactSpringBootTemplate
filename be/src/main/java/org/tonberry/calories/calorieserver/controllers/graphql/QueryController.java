@@ -40,7 +40,7 @@ public class QueryController extends GraphQLControllerBase {
 
     @QueryMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Mono<String> adminPing() {
+    public Mono<String> adminPing(Principal principal) {
         return Mono.just("pong");
     }
 }
