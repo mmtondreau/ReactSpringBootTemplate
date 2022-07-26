@@ -1,8 +1,13 @@
 type Query {
-    count: Int!
-    curentUser: User
+    currentUser: User
     ping: String
     adminPing: String
+    findRoleById(id: ID!): Role
+    findAuthorityById(id: ID!): Authority
+    findUserById(id: ID!): User
+    roles: [Role!]!
+    authorities: [Authority!]!
+    users: [User!]!
 }
 
 type User {
@@ -12,17 +17,16 @@ type User {
     accountNonExpired: Boolean!
     credentialsNonExpired: Boolean!
     enabled: Boolean!
-    role: Role!
-    # person: Person
+    roles: [Role!]!
 }
 
 type Role {
+    roleId: ID!
     name: String!,
-    authorities: [String]
+    authorities: [Authority!]!
 }
-#
-#type Person {
-#    personId: ID!
-#    firstName: String!
-#    lastName: String!
-#}
+
+type Authority {
+    id: ID!
+    name: String!
+}

@@ -1,6 +1,31 @@
 type Mutation {
-    setCount(input: Int!): Int!
-    decrementCount: Int!
-    incrementCount: Int!
     login: String!
+    createUser(input: CreateUserInput!): Boolean!
+    createRole(input: CreateRoleInput!): Boolean!
+    createAuthority(input: CreateAuthorityInput!): Boolean!
+    addRoleToUser(input: AddRoleToUserInput!): Boolean!
+    addAuthorityToRole(input: AddAuthorityToRoleInput!): Boolean!
+}
+
+input CreateUserInput {
+    username: String!
+    password: String!
+}
+
+input CreateRoleInput {
+    name: String!
+}
+
+input CreateAuthorityInput {
+    name: String!
+}
+
+input AddRoleToUserInput {
+    username: String!
+    role: String!
+}
+
+input AddAuthorityToRoleInput {
+    authority: String!
+    role: String!
 }

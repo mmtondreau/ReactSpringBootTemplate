@@ -68,4 +68,27 @@ public class UserService {
         return authorityRepository.findAuthoritiesByUserId(user.getUserId());
     }
 
+    public Mono<Role> findRoleById(long id) {
+        return roleRepository.findById(id);
+    }
+
+    public Mono<Authority> findAuthorityById(long id) {
+        return authorityRepository.findById(id);
+    }
+
+    public Mono<User> findUserById(long id) {
+        return userRepository.findById(id);
+    }
+
+    public Flux<Role> findAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    public Flux<Authority> findAllAuthorities() {
+        return authorityRepository.findAll();
+    }
+
+    public Flux<User> findAllUsers() {
+        return userRepository.findAll();
+    }
 }

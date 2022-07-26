@@ -15,6 +15,8 @@ public class MutationController {
 
     @MutationMapping
     public Mono<String> login(Principal principal) {
-        return  Mono.just(principal.getName());
+        return Mono.just(principal.getName());
     }
+
+
 }
